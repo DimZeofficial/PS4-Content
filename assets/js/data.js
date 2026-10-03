@@ -18,11 +18,19 @@ class GameDatabase {
 
   /**
    * Load games from the JSON file.
+   * Automatically handles both localhost and GitHub Pages subdirectory hosting.
    */
   async load() {
     try {
-      const response = await fetch('/data/games.json');
-      if (!response.ok) throw new Error('Failed to load games data');
+      // Build the correct path relative to the repo root
+      // e.g. on GitHub Pages: /PS4-Content/data/games.json
+      // e.g. on localhost:    /data/games.json
+      const basePath = window.location.pathname.replace(/\/[^\/]*$/, '');
+      const url = `${basePath}/data/games.json`;
+      console.log('📂 Fetching games from:', url);
+
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`Failed to load games data (${response.status})`);
       const data = await response.json();
       this.games = data.games || [];
       this.filteredGames = [...this.games];
