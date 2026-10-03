@@ -1,0 +1,42 @@
+/* Light Theme Override */
+[data-theme="light"] {
+  --color-bg-primary: #f8fafc;
+  --color-bg-secondary: #ffffff;
+  --color-bg-card: #ffffff;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #64748b;
+  --color-border: #e2e8f0;
+  
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .game-card__badge--region {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #0f172a;
+}
+
+[data-theme="light"] .download-item {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="light"] .info-grid code {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .sidebar__nav-item:hover,
+[data-theme="light"] .sidebar__nav-item.active {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .sidebar__user {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] .btn--icon {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .btn--icon:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
