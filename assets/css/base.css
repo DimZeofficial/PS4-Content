@@ -6,13 +6,13 @@
 }
 
 :root {
-  /* Colors - based on screenshot 1 & 2 */
+  /* Default Colors (Dark / PS4 Midnight Navy) */
   --color-bg-primary: #0a0e17;    /* Deep navy blue */
   --color-bg-secondary: #131a2a;  /* Slightly lighter navy */
   --color-bg-card: #1a2332;       /* Card background */
   --color-accent-primary: #0070f3; /* PS4 blue */
   --color-accent-secondary: #8b5cf6; /* Purple for active states */
-  --color-accent-danger: #ef4444;  /* Red for delete */
+  --color-accent-danger: #ef4444;  /* Red for delete / remove */
   --color-text-primary: #e2e8f0;
   --color-text-secondary: #94a3b8;
   --color-border: #2d3748;
@@ -25,7 +25,7 @@
   --space-xl: 32px;
   
   /* Typography */
-  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-size-sm: 0.875rem;
   --font-size-md: 1rem;
   --font-size-lg: 1.25rem;
@@ -38,8 +38,27 @@
   --radius-lg: 16px;
   
   /* Shadows */
-  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-  --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 4px 16px -2px rgba(0, 0, 0, 0.4);
+  --shadow-hover: 0 14px 30px -4px rgba(0, 112, 243, 0.35);
+
+  /* Animation & Transitions */
+  --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-base: 280ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 450ms cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Ambient Orbs */
+  --orb-color: #0070f3;
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
 }
 
 body {
@@ -48,15 +67,33 @@ body {
   color: var(--color-text-primary);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.35s var(--ease-out), transform 0.35s var(--ease-out), background-color 0.3s ease;
+}
+
+body.page-loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+body.page-fade-out {
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.18s ease-in, transform 0.18s ease-in;
 }
 
 a {
   color: var(--color-accent-primary);
   text-decoration: none;
+  transition: color var(--transition-fast);
 }
 
 a:hover {
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 button {
@@ -69,6 +106,101 @@ button {
 img {
   max-width: 100%;
   display: block;
+}
+
+/* ==========================================================================
+   Ambient Falling Orbs Background
+   ========================================================================== */
+.orbs-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.orb {
+  position: absolute;
+  top: -200px;
+  left: var(--x, 50%);
+  width: var(--size, 200px);
+  height: var(--size, 200px);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--orb-color, #0070f3) 0%, transparent 68%);
+  filter: blur(50px);
+  opacity: 0.28;
+  animation: orbFall var(--duration, 28s) linear infinite;
+  animation-delay: var(--delay, 0s);
+  will-change: transform, opacity;
+}
+
+@keyframes orbFall {
+  0% {
+    transform: translateY(-100px) translateX(0) scale(0.8);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.32;
+  }
+  50% {
+    transform: translateY(55vh) translateX(var(--dx, 35px)) scale(1.1);
+    opacity: 0.38;
+  }
+  88% {
+    opacity: 0.24;
+  }
+  100% {
+    transform: translateY(118vh) translateX(calc(var(--dx, 35px) * -0.6)) scale(0.85);
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   Scrolling & Element Reveal Animations
+   ========================================================================== */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal--scale {
+  transform: translateY(18px) scale(0.96);
+}
+
+.reveal--scale.revealed {
+  transform: translateY(0) scale(1);
+}
+
+.reveal--slide-left {
+  transform: translateX(-28px);
+}
+
+.reveal--slide-left.revealed {
+  transform: translateX(0);
+}
+
+.reveal--slide-right {
+  transform: translateX(28px);
+}
+
+.reveal--slide-right.revealed {
+  transform: translateX(0);
+}
+
+.reveal--fade {
+  transform: none;
+}
+
+.reveal--fade.revealed {
+  opacity: 1;
 }
 
 /* Scrollbar Styling */
@@ -87,5 +219,5 @@ img {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-secondary);
+  background: var(--color-accent-primary);
 }

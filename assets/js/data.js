@@ -8,7 +8,6 @@ class GameDatabase {
     this.filteredGames = [];
     this.filters = {
       region: [],
-      firmware: [],
       genre: [],
       searchQuery: '',
       sortBy: 'title',
@@ -18,18 +17,26 @@ class GameDatabase {
 
   /**
    * Load games from the JSON file.
-   * Automatically handles both localhost and GitHub Pages subdirectory hosting.
+   * Automatically handles localhost, subpaths, and GitHub Pages hosting.
    */
   async load() {
     try {
-      // Build the correct path relative to the repo root
-      // e.g. on GitHub Pages: /PS4-Content/data/games.json
-      // e.g. on localhost:    /data/games.json
-      const basePath = window.location.pathname.replace(/\/[^\/]*$/, '');
-      const url = `${basePath}/data/games.json`;
-      console.log('📂 Fetching games from:', url);
+      const basePath = window.location.pathname.replace(/\/[^/]*$/, '');
+      const primaryUrl = `${basePath}/data/games.json`;
+      console.log('📂 Fetching games from:', primaryUrl);
 
-      const response = await fetch(url);
+      let response;
+      try {
+        response = await fetch(primaryUrl);
+      } catch (e) {
+        response = null;
+      }
+
+      if (!response || !response.ok) {
+        // Fallback to relative path
+        response = await fetch('data/games.json');
+      }
+
       if (!response.ok) throw new Error(`Failed to load games data (${response.status})`);
       const data = await response.json();
       this.games = data.games || [];
@@ -53,10 +60,6 @@ class GameDatabase {
       // Region filter
       if (this.filters.region.length > 0 && 
           !this.filters.region.includes(game.region)) return false;
-      
-      // Firmware filter
-      if (this.filters.firmware.length > 0 && 
-          !this.filters.firmware.includes(game.firmware)) return false;
       
       // Genre filter
       if (this.filters.genre.length > 0 && 
@@ -121,6 +124,7 @@ class GameDatabase {
    * Get a single game by its ID.
    */
   getGameById(id) {
-    return this.games.find(game => game.id === id) || null;
+    if (!id) return null;
+    return this.games.find(game => game.id.toLowerCase() === id.toLowerCase()) || null;
   }
 }
