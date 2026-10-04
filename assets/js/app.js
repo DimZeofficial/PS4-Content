@@ -1,10 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
-  console.log('🚀 APP STARTING');
-
   // 1. Load database
   const db = new GameDatabase();
   await db.load();
-  console.log('🚀 Loaded', db.games.length, 'games');
 
   // 2. State
   const state = {
@@ -19,17 +16,31 @@ document.addEventListener('DOMContentLoaded', async () => {
   const pageSizeSelect = document.getElementById('pageSize');
   const paginationEl = document.getElementById('pagination');
 
-  if (!gridContainer) {
-    console.error('🔴 No #gameGrid found — aborting');
-    return;
+  // 4. Reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.08,
+    rootMargin: '0px 0px -40px 0px'
+  });
+
+  function observeGrid(items) {
+    items.forEach((el, idx) => {
+      el.style.setProperty('--reveal-delay', `${Math.min(idx % 20, 12) * 40}ms`);
+      observer.observe(el);
+    });
   }
 
-  // 4. Render pipeline
+  // 5. Render pipeline
   function render() {
     const total = state.results.length;
     const totalPages = Math.max(1, Math.ceil(total / state.pageSize));
 
-    // Clamp current page
     if (state.currentPage > totalPages) state.currentPage = totalPages;
     if (state.currentPage < 1) state.currentPage = 1;
 
@@ -40,6 +51,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     UI.renderGameGrid(pageItems, gridContainer);
     updateResultCount(total, start, end);
     renderPagination(totalPages);
+
+    setTimeout(() => {
+      if (gridContainer) {
+        const cards = gridContainer.querySelectorAll('.game-card, .reveal');
+        cards.forEach((card) => card.classList.add('reveal'));
+        observeGrid(cards);
+      }
+    }, 50);
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -79,27 +99,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       return span;
     };
 
-    // Previous
-    paginationEl.appendChild(createBtn('‹', state.currentPage - 1, {
-      disabled: state.currentPage === 1
-    }));
-
-    // Page numbers with ellipsis
+    paginationEl.appendChild(createBtn('‹', state.currentPage - 1, { disabled: state.currentPage === 1 }));
     const pages = getPageNumbers(state.currentPage, totalPages);
     pages.forEach(p => {
-      if (p === '...') {
-        paginationEl.appendChild(createEllipsis());
-      } else {
-        paginationEl.appendChild(createBtn(String(p), p, {
-          active: p === state.currentPage
-        }));
-      }
+      if (p === '...') paginationEl.appendChild(createEllipsis());
+      else paginationEl.appendChild(createBtn(String(p), p, { active: p === state.currentPage }));
     });
-
-    // Next
-    paginationEl.appendChild(createBtn('›', state.currentPage + 1, {
-      disabled: state.currentPage === totalPages
-    }));
+    paginationEl.appendChild(createBtn('›', state.currentPage + 1, { disabled: state.currentPage === totalPages }));
   }
 
   function getPageNumbers(current, total) {
@@ -107,25 +113,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     const range = [];
     const rangeWithDots = [];
     let last;
-
     for (let i = 1; i <= total; i++) {
-      if (i === 1 || i === total || (i >= current - delta && i <= current + delta)) {
-        range.push(i);
-      }
+      if (i === 1 || i === total || (i >= current - delta && i <= current + delta)) range.push(i);
     }
-
     for (const i of range) {
       if (last) {
-        if (i - last === 2) {
-          rangeWithDots.push(last + 1);
-        } else if (i - last > 2) {
-          rangeWithDots.push('...');
-        }
+        if (i - last === 2) rangeWithDots.push(last + 1);
+        else if (i - last > 2) rangeWithDots.push('...');
       }
       rangeWithDots.push(i);
       last = i;
     }
-
     return rangeWithDots;
   }
 
@@ -135,14 +133,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     render();
   }
 
-  // 5. Initial render
+  // 6. Initial
   state.results = db.games;
   render();
 
-  // 6. Search wiring
+  // 7. Search
   if (searchInput) {
-    console.log('🚀 Wiring up live search...');
-
     const urlParams = new URLSearchParams(window.location.search);
     const initialQuery = urlParams.get('q');
     if (initialQuery) {
@@ -150,7 +146,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       db.updateFilter('searchQuery', initialQuery);
       applyFilterAndReset();
     }
-
     let timeout;
     searchInput.addEventListener('input', (e) => {
       clearTimeout(timeout);
@@ -159,7 +154,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         applyFilterAndReset();
       }, 250);
     });
-
     searchInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
         const q = e.target.value.trim();
@@ -167,13 +161,13 @@ document.addEventListener('DOMContentLoaded', async () => {
           db.updateFilter('searchQuery', q);
           applyFilterAndReset();
         } else {
-          window.location.href = `search?q=${encodeURIComponent(q)}`;
+          navigateWithTransition(`search?q=${encodeURIComponent(q)}`);
         }
       }
     });
   }
 
-  // 7. Page size selector
+  // 8. Page size
   if (pageSizeSelect) {
     pageSizeSelect.addEventListener('change', (e) => {
       state.pageSize = parseInt(e.target.value, 10);
@@ -182,7 +176,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // 8. Sort dropdown
+  // 9. Sort
   const sortSelect = document.getElementById('sortSelect');
   if (sortSelect) {
     sortSelect.addEventListener('change', (e) => {
@@ -191,7 +185,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // 9. Region checkboxes
+  // 10. Filters
   document.querySelectorAll('input[name="region"]').forEach(cb => {
     cb.addEventListener('change', () => {
       const selected = Array.from(document.querySelectorAll('input[name="region"]:checked')).map(el => el.value);
@@ -199,8 +193,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       applyFilterAndReset();
     });
   });
-
-  // 10. Firmware checkboxes
   document.querySelectorAll('input[name="firmware"]').forEach(cb => {
     cb.addEventListener('change', () => {
       const selected = Array.from(document.querySelectorAll('input[name="firmware"]:checked')).map(el => el.value);
@@ -209,7 +201,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  // 11. Reset filters
+  // 11. Reset
   const resetBtn = document.getElementById('resetFilters');
   if (resetBtn) {
     resetBtn.addEventListener('click', () => {
@@ -230,7 +222,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') UI.closeModal(); });
   }
 
-  // 13. Card clicks
+  // 13. Card clicks + wishlist + smooth nav
+  function navigateWithTransition(url) {
+    document.body.classList.add('page-fade-out');
+    setTimeout(() => {
+      window.location.href = url;
+    }, 160);
+  }
+
+  document.querySelectorAll('a[data-nav="smooth"], .sidebar__nav-item[href$=".html"], .top-header__nav-link[href$=".html"]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      if (!href || href.startsWith('#')) return;
+      if (e.metaKey || e.ctrlKey) return;
+      e.preventDefault();
+      navigateWithTransition(href);
+    });
+  });
+
   document.addEventListener('click', (e) => {
     const downloadBtn = e.target.closest('.btn--download');
     const wishlistBtn = e.target.closest('.btn--wishlist');
@@ -246,10 +255,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       let wishlist = JSON.parse(localStorage.getItem('ps4_wishlist') || '[]');
       if (wishlist.includes(gameId)) {
         wishlist = wishlist.filter(id => id !== gameId);
-        wishlistBtn.style.color = 'var(--color-text-secondary)';
+        wishlistBtn.classList.remove('btn--wishlist--active');
       } else {
         wishlist.push(gameId);
-        wishlistBtn.style.color = 'var(--color-accent-danger)';
+        wishlistBtn.classList.add('btn--wishlist--active');
       }
       localStorage.setItem('ps4_wishlist', JSON.stringify(wishlist));
     }
@@ -260,19 +269,107 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // 14. Theme toggle
+  // 14. Theme toggle + dropdown
   const themeToggle = document.getElementById('themeToggle');
-  if (themeToggle) {
-    const currentTheme = localStorage.getItem('ps4_theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', currentTheme);
-    themeToggle.addEventListener('click', () => {
-      const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', newTheme);
-      localStorage.setItem('ps4_theme', newTheme);
-      themeToggle.textContent = newTheme === 'dark' ? '🌙' : '☀️';
-    });
-    themeToggle.textContent = currentTheme === 'dark' ? '🌙' : '☀️';
+  const themeSelect = document.getElementById('themeSelect');
+  const themes = [
+    { value: 'dark', label: 'Dark', emoji: '🌙' },
+    { value: 'light', label: 'Light', emoji: '☀️' },
+    { value: 'ocean', label: 'Ocean', emoji: '🌊' },
+    { value: 'cyberpunk', label: 'Cyberpunk', emoji: '🪩' },
+    { value: 'forest', label: 'Forest', emoji: '🌲' },
+    { value: 'amber', label: 'Amber', emoji: '🔥' },
+    { value: 'violet', label: 'Violet', emoji: '🌀' }
+  ];
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('ps4_theme', theme);
+    const found = themes.find(t => t.value === theme);
+    if (themeToggle) themeToggle.textContent = found ? found.emoji : '🎨';
+    if (themeSelect) themeSelect.value = theme;
   }
 
-  console.log('🚀 APP READY');
+  applyTheme(localStorage.getItem('ps4_theme') || 'dark');
+
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      const idx = themes.findIndex(t => t.value === current);
+      const next = themes[(idx + 1) % themes.length];
+      applyTheme(next.value);
+    });
+  }
+
+  if (themeSelect) {
+    themes.forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t.value;
+      opt.textContent = `${t.emoji} ${t.label}`;
+      themeSelect.appendChild(opt);
+    });
+    themeSelect.value = document.documentElement.getAttribute('data-theme') || 'dark';
+    themeSelect.addEventListener('change', (e) => applyTheme(e.target.value));
+  }
+
+  // 15. Wishlist page sync
+  function syncWishlistUI() {
+    const wishlist = JSON.parse(localStorage.getItem('ps4_wishlist') || '[]');
+    document.querySelectorAll('.btn--wishlist').forEach(btn => {
+      if (wishlist.includes(btn.dataset.gameId)) btn.classList.add('btn--wishlist--active');
+    });
+  }
+  syncWishlistUI();
+
+  // 16. Orbs
+  function createOrbs() {
+    const container = document.querySelector('.orbs-bg') || (() => {
+      const c = document.createElement('div');
+      c.className = 'orbs-bg';
+      document.body.prepend(c);
+      return c;
+    })();
+    if (container.dataset.filled) return;
+    container.dataset.filled = 'true';
+    const count = window.matchMedia('(max-width: 768px)').matches ? 6 : 10;
+    for (let i = 0; i < count; i++) {
+      const orb = document.createElement('div');
+      orb.className = 'orb';
+      const size = 120 + Math.random() * 220;
+      const x = Math.random() * 100;
+      const dx = (Math.random() * 40 - 20);
+      const dur = 24 + Math.random() * 16;
+      const delay = Math.random() * 20;
+      orb.style.setProperty('--size', size + 'px');
+      orb.style.setProperty('--x', x + '%');
+      orb.style.setProperty('--dx', dx + 'px');
+      orb.style.setProperty('--duration', dur + 's');
+      orb.style.setProperty('--delay', delay + 's');
+      orb.style.setProperty('--orb-color', ['#0070f3', '#8b5cf6', '#38bdf8', '#ff3cac', '#34d399', '#f59e0b'][i % 6]);
+      container.appendChild(orb);
+    }
+  }
+  createOrbs();
+  window.addEventListener('resize', createOrbs, { passive: true });
+
+  // 17. Page load reveal
+  requestAnimationFrame(() => {
+    document.body.classList.add('page-loaded');
+  });
+
+  // 18. Wishlist dedicated page
+  const wishlistGrid = document.getElementById('wishlistGrid');
+  if (wishlistGrid && window.location.pathname.includes('wishlist')) {
+    const wishlist = JSON.parse(localStorage.getItem('ps4_wishlist') || '[]');
+    const items = db.games.filter(g => wishlist.includes(g.id));
+    if (items.length === 0) {
+      wishlistGrid.innerHTML = '<div class="empty-state"><h3>No games in wishlist yet</h3><p>Add games by clicking the heart icon.</p></div>';
+    } else {
+      UI.renderGameGrid(items, wishlistGrid);
+      setTimeout(() => {
+        const cards = wishlistGrid.querySelectorAll('.game-card');
+        cards.forEach(c => { c.classList.add('reveal'); observer.observe(c); });
+      }, 30);
+    }
+  }
 });

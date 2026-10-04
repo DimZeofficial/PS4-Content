@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="assets/css/themes.css">
 </head>
 <body>
+  <div class="orbs-bg"></div>
   <div class="app-layout">
     <!-- Sidebar -->
     <aside class="sidebar">
@@ -29,11 +30,11 @@
           <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
           Search
         </a>
-        <a href="#" class="sidebar__nav-item">
+        <a href="wishlist.html" class="sidebar__nav-item" data-nav="smooth">
           <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
           Wishlist
         </a>
-        <a href="#" class="sidebar__nav-item">
+        <a href="wishlist.html" class="sidebar__nav-item" data-nav="smooth">
           <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
           Settings
         </a>
@@ -56,15 +57,17 @@
           <a href="index.html" class="top-header__nav-link active">HOME</a>
           <a href="search.html" class="top-header__nav-link">STORE</a>
           <a href="#" class="top-header__nav-link">ONLINE</a>
-          <a href="#" class="top-header__nav-link">LIBRARY</a>
+          <a href="wishlist.html" class="top-header__nav-link" data-nav="smooth">WISHLIST</a><a href="#" class="top-header__nav-link">LIBRARY</a>
         </nav>
         <div class="top-header__actions">
           <span style="font-size:0.75rem; color:var(--color-text-secondary);">192.168.1.18</span>
+          <select id="themeSelect" class="theme-select" aria-label="Select theme"></select>
           <button id="themeToggle" class="btn--icon" style="font-size:1.2rem; width:36px; height:36px;">🌙</button>
         </div>
       </header>
 
       <div class="content-area">
+        <div class="pagination" id="pagination"></div>
         <h1 style="margin-bottom: var(--space-md);">PS4 Database</h1>
         <p style="color: var(--color-text-secondary); margin-bottom: var(--space-lg);">
           Download the latest PS4 games directly to your console. High-speed PKG files.

@@ -1,16 +1,6 @@
-/**
- * UI Rendering Layer
- * Handles all DOM manipulation and rendering.
- */
 const UI = {
-  /**
-   * Render the game grid.
-   * @param {Array} games - Array of game objects
-   * @param {HTMLElement} container - Target container
-   */
   renderGameGrid(games, container) {
     if (!container) return;
-
     if (games.length === 0) {
       container.innerHTML = `
         <div class="empty-state">
@@ -21,29 +11,20 @@ const UI = {
           <p>Try adjusting your filters or search query.</p>
         </div>
       `;
-      this.updateResultCount(0);
       return;
     }
-    
     const fragment = document.createDocumentFragment();
     games.forEach(game => {
       const card = this.createGameCard(game);
       fragment.appendChild(card);
     });
-    
     container.innerHTML = '';
     container.appendChild(fragment);
-    this.updateResultCount(games.length);
   },
 
-  /**
-   * Create a single game card element.
-   * @param {Object} game - Game data
-   * @returns {HTMLElement}
-   */
   createGameCard(game) {
     const article = document.createElement('article');
-    article.className = 'game-card';
+    article.className = 'game-card reveal reveal--scale';
     article.dataset.gameId = game.id;
     article.innerHTML = `
       <div class="game-card__cover">
@@ -53,10 +34,10 @@ const UI = {
       </div>
       <div class="game-card__info">
         <h3 class="game-card__title" title="${game.title}">${game.title}</h3>
-        <p class="game-card__meta">${game.id} • ${new Date(game.releaseDate).getFullYear()}</p>
+        <p class="game-card__meta">${game.id} • ${game.releaseDate ? new Date(game.releaseDate).getFullYear() : 'N/A'}</p>
         <div class="game-card__tags">
-          ${game.genre.slice(0, 2).map(g => `<span class="tag">${g}</span>`).join('')}
-          <span class="tag tag--size">${game.size.game}</span>
+          ${Array.isArray(game.genre) ? game.genre.slice(0, 2).map(g => `<span class="tag">${g}</span>`).join('') : ''}
+          ${game.size?.game ? `<span class="tag tag--size">${game.size.game}</span>` : ''}
         </div>
       </div>
       <div class="game-card__actions">
@@ -73,113 +54,84 @@ const UI = {
         </button>
       </div>
     `;
+    const wishlist = JSON.parse(localStorage.getItem('ps4_wishlist') || '[]');
+    if (wishlist.includes(game.id)) article.querySelector('.btn--wishlist')?.classList.add('btn--wishlist--active');
     return article;
   },
 
-  /**
-   * Show the game detail modal.
-   * @param {Object} game - Game data
-   */
   showGameDetail(game) {
     const modal = document.getElementById('gameModal');
     if (!modal) return;
-
     modal.querySelector('.modal__title').textContent = game.title;
     modal.querySelector('.modal__body').innerHTML = this.buildDetailHTML(game);
     modal.classList.add('modal--active');
+    const closeBtn = modal.querySelector('.modal__close');
+    if (closeBtn) closeBtn.focus();
   },
 
-  /**
-   * Build the HTML for the game detail modal.
-   * @param {Object} game - Game data
-   * @returns {string}
-   */
   buildDetailHTML(game) {
     return `
-      <div class="detail__header">
+      <div class="detail__header reveal reveal--slide-left">
         <img src="${game.coverImage}" alt="${game.title}" class="detail__cover" onerror="this.src='https://via.placeholder.com/300x400/1a2332/ffffff?text=No+Cover'">
-        <div class="detail__meta">
+        <div class="detail__meta reveal reveal--slide-right">
           <h2>${game.title}</h2>
           <p class="detail__id">${game.id}</p>
           <div class="detail__badges">
-            <span class="badge">${game.region}</span>
-            <span class="badge">${game.firmware}+</span>
-            <span class="badge">${game.genre.join(', ')}</span>
+            ${game.region ? `<span class="badge">${game.region}</span>` : ''}
+            ${game.firmware ? `<span class="badge">${game.firmware}+</span>` : ''}
+            ${Array.isArray(game.genre) ? game.genre.map(g => `<span class="badge">${g}</span>`).join('') : ''}
           </div>
-          <p class="detail__description">${game.description}</p>
+          ${game.description ? `<p class="detail__description">${game.description}</p>` : ''}
         </div>
       </div>
-      
-      <div class="detail__downloads">
+      <div class="detail__downloads reveal reveal--fade">
         <h3>Download Links</h3>
-        
         ${game.links && game.links.pkgps4 ? `
-          <div class="download-item" style="border-left: 3px solid var(--color-accent-primary); background-color: rgba(0, 112, 243, 0.05);">
+          <div class="download-item" style="border-left: 3px solid var(--color-accent-primary);">
             <div class="download-item__info">
-              <span class="download-item__type" style="color: var(--color-accent-primary);">PKGPS4</span>
-              <span class="download-item__notes">Direct download from pkgps4.click</span>
+              <span class="download-item__type">PKGPS4.CLICK</span>
+              <span class="download-item__notes">Direct PKG link</span>
             </div>
             <div class="download-item__actions">
-              <a href="${game.links.pkgps4}" class="btn btn--primary" target="_blank" rel="noopener">
-                Download from PKGPS4
-              </a>
+              <a href="${game.links.pkgps4}" class="btn btn--primary" target="_blank" rel="noopener">Open PKGPS4 Link</a>
             </div>
           </div>
         ` : ''}
-
-        ${game.downloads.map(dl => `
+        ${Array.isArray(game.downloads) ? game.downloads.filter(dl => !(dl.source && dl.source.toLowerCase() === 'pkgps4')).map(dl => `
           <div class="download-item">
             <div class="download-item__info">
-              <span class="download-item__type">${dl.type}</span>
+              <span class="download-item__type">${dl.type || 'Game'}</span>
               ${dl.version ? `<span class="download-item__version">v${dl.version}</span>` : ''}
               ${dl.size ? `<span class="download-item__size">${dl.size}</span>` : ''}
+              ${dl.source ? `<span class="download-item__notes">${dl.source}</span>` : ''}
               ${dl.notes ? `<span class="download-item__notes">${dl.notes}</span>` : ''}
             </div>
             <div class="download-item__actions">
-              <a href="${dl.url}" class="btn btn--primary" target="_blank" rel="noopener">
-                Download from ${dl.source || 'Host'}
-              </a>
-              ${dl.mirrors ? dl.mirrors.map(m => `
-                <a href="${m.url}" class="btn btn--ghost" target="_blank" rel="noopener">
-                  ${m.source}
-                </a>
-              `).join('') : ''}
+              ${dl.url ? `<a href="${dl.url}" class="btn btn--primary" target="_blank" rel="noopener">Download</a>` : ''}
+              ${Array.isArray(dl.mirrors) ? dl.mirrors.map(m => `<a href="${m.url}" class="btn btn--ghost" target="_blank" rel="noopener">${m.source}</a>`).join('') : ''}
             </div>
           </div>
-        `).join('')}
+        `).join('') : ''}
+        ${(!game.links?.pkgps4 && (!Array.isArray(game.downloads) || game.downloads.length === 0)) ? '<p style="color:var(--color-text-secondary);">No download links available yet.</p>' : ''}
       </div>
-      
-      <div class="detail__info">
+      <div class="detail__info reveal reveal--fade">
         <h3>Information</h3>
         <dl class="info-grid">
-          <dt>Developer</dt><dd>${game.developer}</dd>
-          <dt>Publisher</dt><dd>${game.publisher}</dd>
-          <dt>Release Date</dt><dd>${game.releaseDate}</dd>
+          ${game.developer ? `<dt>Developer</dt><dd>${game.developer}</dd>` : ''}
+          ${game.publisher ? `<dt>Publisher</dt><dd>${game.publisher}</dd>` : ''}
+          ${game.releaseDate ? `<dt>Release Date</dt><dd>${game.releaseDate}</dd>` : ''}
           <dt>Password</dt><dd><code>${game.password || 'N/A'}</code></dd>
-          <dt>Languages</dt><dd>${game.languages.join(', ')}</dd>
+          ${Array.isArray(game.languages) && game.languages.length ? `<dt>Languages</dt><dd>${game.languages.join(', ')}</dd>` : ''}
+          ${game.size?.game ? `<dt>Game Size</dt><dd>${game.size.game}</dd>` : ''}
+          ${game.size?.update ? `<dt>Update</dt><dd>${game.size.update}</dd>` : ''}
+          ${game.size?.dlc ? `<dt>DLC</dt><dd>${game.size.dlc}</dd>` : ''}
         </dl>
       </div>
     `;
   },
 
-  /**
-   * Update the result count element.
-   * @param {number} count 
-   */
-  updateResultCount(count) {
-    const el = document.getElementById('resultCount');
-    if (el) {
-      el.textContent = `${count} game${count !== 1 ? 's' : ''} found`;
-    }
-  },
-
-  /**
-   * Close the game detail modal.
-   */
   closeModal() {
     const modal = document.getElementById('gameModal');
-    if (modal) {
-      modal.classList.remove('modal--active');
-    }
+    if (modal) modal.classList.remove('modal--active');
   }
 };

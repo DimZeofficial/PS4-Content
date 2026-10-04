@@ -40,3 +40,21 @@
 [data-theme="light"] .btn--icon:hover {
   background: rgba(0, 0, 0, 0.1);
 }
+/* Violet Theme */
+[data-theme="violet"] {
+  --color-bg-primary: #0f0a1f;
+  --color-bg-secondary: #16102e;
+  --color-bg-card: #1f163f;
+  --color-accent-primary: #a78bfa;
+  --color-accent-secondary: #7c3aed;
+  --color-accent-danger: #f87171;
+  --color-text-primary: #f3edff;
+  --color-text-secondary: #d7c9ff;
+  --color-border: #33235f;
+  --shadow-card: 0 10px 60px -20px rgba(124, 58, 237, 0.55);
+  --shadow-hover: 0 18px 80px -24px rgba(167, 139, 250, 0.55);
+}
+
+[data-theme="violet"] .orb {
+  --orb-color: #a78bfa;
+}
