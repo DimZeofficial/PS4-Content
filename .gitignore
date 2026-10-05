@@ -2,6 +2,5 @@ node_modules/
 .DS_Store
 Thumbs.db
 *.log
-# broken symlink to external avatar dir
-assets/avatars
 docs/
+.dtrash/
