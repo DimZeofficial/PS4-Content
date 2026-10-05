@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <base href="./">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>PS4 Database - Search & Store</title>
   <meta name="description" content="Search PS4 PKG database by title, region, and genres.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#0a0e17"/><path d="M11 9.5v13l10-6.5z" fill="#0070f3"/></svg>">
@@ -19,9 +19,10 @@
   <div class="orbs-bg"></div>
   <div class="app-layout">
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar" aria-label="Main navigation">
       <div class="sidebar__header">
         <span class="sidebar__logo">NoPayStation™</span>
+        <button id="sidebarClose" class="sidebar__close" type="button" aria-label="Close navigation menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
       </div>
       <nav class="sidebar__nav">
         <a href="index.html" class="sidebar__nav-item" data-nav="smooth">
@@ -59,9 +60,12 @@
       </div>
     </aside>
 
+    <div class="sidebar-backdrop" id="sidebarBackdrop" hidden></div>
+
     <!-- Main Content -->
     <main class="main-content">
       <header class="top-header">
+        <button id="navToggle" class="nav-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="sidebar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
         <nav class="top-header__nav">
           <a href="index.html" class="top-header__nav-link" data-nav="smooth">HOME</a>
           <a href="search.html" class="top-header__nav-link active" data-nav="smooth">STORE</a>
@@ -80,9 +84,9 @@
         </div>
       </header>
 
-      <div class="content-area" style="display: flex; gap: var(--space-xl); align-items: flex-start;">
+      <div class="content-area content-area--split">
         <!-- Filter Sidebar (Firmware removed) -->
-        <aside style="width: 250px; flex-shrink: 0;" class="reveal reveal--slide-left">
+        <aside class="filter-sidebar reveal reveal--slide-left">
           <div class="filter-group">
             <h4 class="filter-group__title">Region</h4>
             <label class="filter-option">
@@ -109,10 +113,10 @@
         </aside>
 
         <!-- Results Area -->
-        <div style="flex: 1; min-width: 0;">
-          <div class="reveal reveal--fade" style="display: flex; gap: var(--space-md); margin-bottom: var(--space-lg); flex-wrap: wrap;">
-            <input type="text" id="searchInput" placeholder="Search games by title, ID, developer..." style="flex: 1; min-width: 240px; padding: 12px 18px; border-radius: var(--radius-sm); border: 1px solid var(--color-border); background: var(--color-bg-card); color: var(--color-text-primary); font-size: 1rem; box-shadow: var(--shadow-card);">
-            <select id="sortSelect" style="padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--color-border); background: var(--color-bg-card); color: var(--color-text-primary); font-weight: 600;" aria-label="Sort games">
+        <div class="results-area">
+          <div class="reveal reveal--fade search-bar-row search-bar-row--wrap">
+            <input type="text" id="searchInput" placeholder="Search games by title, ID, developer..." class="form-input">
+            <select id="sortSelect" class="form-select" aria-label="Sort games">
               <option value="title">Sort by Title (A-Z)</option>
               <option value="releaseDate">Sort by Release Date</option>
               <option value="size.game">Sort by Size</option>
@@ -120,11 +124,11 @@
           </div>
 
           <!-- Result count + Page size (12, 24, 48) -->
-          <div class="reveal reveal--fade" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
+          <div class="reveal reveal--fade result-toolbar">
             <span id="resultCount" style="color: var(--color-text-secondary); font-size: 0.9rem; font-weight: 500;"></span>
-            <div style="display: flex; align-items: center; gap: var(--space-sm);">
-              <label style="font-size: 0.875rem; color: var(--color-text-secondary);">Per page:</label>
-              <select id="pageSize" style="padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid var(--color-border); background: var(--color-bg-card); color: var(--color-text-primary); font-weight: 600;">
+            <div class="result-toolbar__controls">
+              <label class="result-toolbar__label" for="pageSize">Per page:</label>
+              <select id="pageSize" class="form-select form-select--sm">
                 <option value="12">12</option>
                 <option value="24" selected>24</option>
                 <option value="48">48</option>
@@ -155,6 +159,7 @@
 
   <script src="assets/js/data.js"></script>
   <script src="assets/js/ui.js"></script>
+  <script src="assets/js/mobile-nav.js"></script>
   <script src="assets/js/app.js"></script>
 </body>
 </html>

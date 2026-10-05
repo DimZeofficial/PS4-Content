@@ -281,7 +281,74 @@
   margin-top: var(--space-lg);
 }
 
-/* Responsive Design */
+/* ==========================================================================
+   Mobile Navigation Toggle (hidden on desktop, where the sidebar is docked)
+   ========================================================================== */
+.nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.nav-toggle:hover,
+.nav-toggle[aria-expanded="true"] {
+  border-color: var(--color-accent-primary);
+  background: rgba(0, 112, 243, 0.15);
+}
+
+.sidebar__close {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  margin-left: auto;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.sidebar__close:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--color-text-primary);
+}
+
+/* Off-canvas scrim; only meaningful while the drawer is open */
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 19;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.sidebar-backdrop:not([hidden]) {
+  opacity: 1;
+}
+
+/* Scroll lock while the drawer owns the screen */
+body.nav-open {
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+/* Tablet: narrow the docked sidebar, tighten gutters */
 @media (max-width: 1024px) {
   .sidebar {
     width: 220px;
@@ -291,41 +358,317 @@
   }
 }
 
-@media (max-width: 768px) {
+/* Below this the docked sidebar no longer fits, so it becomes a drawer */
+@media (max-width: 900px) {
   .app-layout {
     flex-direction: column;
   }
-  
+
   .sidebar {
-    width: 100%;
-    height: auto;
-    position: relative;
-    border-right: none;
-    border-bottom: 1px solid var(--color-border);
-  }
-  
-  .sidebar__nav {
-    display: flex;
-    overflow-x: auto;
-    gap: var(--space-sm);
-    padding: var(--space-sm) var(--space-md);
-  }
-  
-  .sidebar__nav-item {
-    white-space: nowrap;
-    margin-bottom: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(290px, 86vw);
+    height: 100dvh;
+    max-height: 100dvh;
+    z-index: 20;
+    border-right: 1px solid var(--color-border);
+    border-bottom: none;
+    transform: translateX(-100%);
+    transition: transform var(--transition-base);
+    box-shadow: none;
+    /* Closed drawer must not swallow taps meant for the page beneath it.
+       `inert` (set by JS) also keeps it out of the tab order and the a11y
+       tree, which visibility alone would not do for a translated element. */
+    pointer-events: none;
   }
 
+  body.nav-open .sidebar {
+    transform: translateX(0);
+    pointer-events: auto;
+    box-shadow: 12px 0 40px -8px rgba(0, 0, 0, 0.6);
+  }
+
+  .sidebar__nav {
+    display: block;
+    overflow-x: visible;
+    padding: var(--space-md);
+  }
+
+  .sidebar__nav-item {
+    white-space: normal;
+    margin-bottom: var(--space-xs);
+    /* Comfortable thumb target */
+    min-height: 48px;
+  }
+
+  /* Keep the profile footer reachable in the drawer */
   .sidebar__footer {
+    display: block;
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  .sidebar__close {
+    display: inline-flex;
+  }
+
+  /* Nav links are redundant once the drawer holds them */
+  .top-header__nav {
     display: none;
   }
-  
+
   .top-header {
     padding: var(--space-sm) var(--space-md);
+    gap: var(--space-sm);
+    min-height: 60px;
+  }
+
+  .top-header__actions {
+    gap: var(--space-sm);
+    margin-left: auto;
+  }
+
+  .content-area {
+    padding: var(--space-md);
   }
 
   .game-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: var(--space-md);
+  }
+}
+
+/* Phones: tighten gutters further and stack full-width control rows */
+@media (max-width: 560px) {
+  .content-area {
+    padding: var(--space-md) var(--space-sm);
+  }
+
+  .game-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-sm);
+  }
+
+  .top-header {
+    padding: 10px var(--space-sm);
+  }
+
+  /* Username is the first thing to go; the avatar still identifies the user */
+  .header-user-btn #headerUsername {
+    display: none;
+  }
+
+  .header-user-btn {
+    padding: 5px 6px;
+  }
+
+  .theme-select {
+    max-width: 96px;
+  }
+}
+
+/* Very narrow phones (SE / small Androids): one column avoids cramped cards */
+@media (max-width: 359px) {
+  .game-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Short landscape windows: the sticky header must not eat the viewport */
+@media (max-height: 480px) and (orientation: landscape) {
+  .top-header {
+    position: static;
+    min-height: 0;
+    padding: var(--space-xs) var(--space-md);
+  }
+
+  .modal {
+    padding: var(--space-sm);
+  }
+
+  .modal__content {
+    max-height: 96vh;
+  }
+}
+/* ==========================================================================
+   Shared Page Structure
+   ========================================================================== */
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+  flex-wrap: wrap;
+}
+
+.page-head__actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.page-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: var(--space-xs);
+}
+
+.page-subtitle {
+  color: var(--color-text-secondary);
+  font-size: 1.05rem;
+}
+
+/* Search input + submit button */
+.search-bar-row {
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.search-bar-row--wrap {
+  margin-bottom: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.form-input {
+  flex: 1;
+  min-width: 0;
+  padding: 14px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-card);
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  box-shadow: var(--shadow-card);
+}
+
+.form-input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--color-accent-primary);
+  box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.25);
+}
+
+.form-select {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-card);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.form-select--sm {
+  padding: 6px 12px;
+  min-height: 38px;
+}
+
+/* Result count + page-size control */
+.result-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.result-toolbar__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.result-toolbar__label {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+/* Two-column store layout: filters beside results */
+.content-area--split {
+  display: flex;
+  gap: var(--space-xl);
+  align-items: flex-start;
+}
+
+.filter-sidebar {
+  width: 250px;
+  flex-shrink: 0;
+}
+
+.results-area {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ==========================================================================
+   Mobile Overrides for Shared Structure
+   ========================================================================== */
+@media (max-width: 900px) {
+  /* Filters stack above results instead of squeezing the grid */
+  .content-area--split {
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .filter-sidebar {
+    width: 100%;
+  }
+
+  .page-head {
+    margin-bottom: var(--space-lg);
+  }
+
+  .page-title {
+    font-size: 1.6rem;
+  }
+
+  .page-subtitle {
+    font-size: 0.95rem;
+  }
+
+  /* Full-width controls stack so nothing is clipped */
+  .search-bar-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-sm);
+  }
+
+  .search-bar-row .btn {
+    width: 100%;
+    min-height: 46px;
+  }
+
+  .search-bar-row--wrap .form-select {
+    width: 100%;
+  }
+
+  .page-head__actions {
+    width: 100%;
+  }
+
+  .page-head__actions .btn {
+    flex: 1;
+    min-height: 46px;
+  }
+
+  .result-toolbar {
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 400px) {
+  .result-toolbar__label {
+    display: none;
   }
 }
