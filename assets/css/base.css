@@ -108,6 +108,15 @@ img {
   display: block;
 }
 
+/* Inline SVG icons: stop flex from collapsing them to zero width.
+   Every icon carries its own width/height so context-specific sizes
+   (11px hint, 15px button, 18px header, 20px nav) are never overridden. */
+svg {
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: middle;
+}
+
 /* ==========================================================================
    Ambient Falling Orbs Background
    ========================================================================== */

@@ -187,10 +187,10 @@ const UI = {
               ${isWishlisted ? 'In Wishlist' : 'Add to Wishlist'}
             </button>
             <a href="game-detail.html?id=${game.id}" class="btn btn--primary" data-nav="smooth">
-              🔗 Open Game Page
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg> Open Game Page
             </a>
             <button class="btn btn--ghost" onclick="navigator.clipboard.writeText(window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'game-detail.html?id=${game.id}').then(() => UI.showToast('Game link copied to clipboard!'))">
-              📋 Copy Link
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;"><path d="M9 9h10v10H9zM5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy Link
             </button>
           </div>
         </div>
@@ -309,7 +309,7 @@ const UI = {
 
     const toast = document.createElement('div');
     toast.className = 'toast';
-    toast.innerHTML = `<span>🎮</span><span>${message}</span>`;
+    toast.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;"><path d="M6 12h4M8 10v4M15 13h.01M18 11h.01M17.5 6H6.5A4.5 4.5 0 002 10.5v3A4.5 4.5 0 006.5 18h11a4.5 4.5 0 004.5-4.5v-3A4.5 4.5 0 0017.5 6z"/></svg><span>${message}</span>`;
     container.appendChild(toast);
 
     setTimeout(() => {
@@ -399,7 +399,10 @@ const UI = {
         <div class="modal__content" style="max-width: 620px;">
           <div class="modal__header">
             <div>
-              <h2 class="modal__title">⚙️ Website Settings</h2>
+              <h2 class="modal__title" style="display:flex; align-items:center; gap:8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 008 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H2a2 2 0 110-4h.09A1.65 1.65 0 004.6 8a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V2a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H22a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                Website Settings
+              </h2>
               <p style="font-size:0.85rem; color:var(--color-text-secondary); margin-top:2px;">
                 Customize performance, background visuals, and display options
               </p>
@@ -411,7 +414,7 @@ const UI = {
               <!-- Setting 1: Orbs in background -->
               <div class="setting-row">
                 <div class="setting-info">
-                  <span class="setting-title">🌌 Background Floating Orbs</span>
+                  <span class="setting-title" style="display:inline-flex;align-items:center;gap:7px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;"><path d="M12 3a9 9 0 109 9c0-2-4.5-3.5-9-3.5S3 10 3 12a9 9 0 009-9z"/></svg> Background Floating Orbs</span>
                   <span class="setting-desc">Ambient glowing orbs slowly drifting downwards across the screen</span>
                 </div>
                 <label class="switch">
@@ -423,7 +426,7 @@ const UI = {
               <!-- Setting 2: Low-res / Lower resource mode -->
               <div class="setting-row">
                 <div class="setting-info">
-                  <span class="setting-title">⚡ Low Resource Mode</span>
+                  <span class="setting-title" style="display:inline-flex;align-items:center;gap:7px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;"><path d="M13 2L3 14h8l-1 8 10-12h-8z"/></svg> Low Resource Mode</span>
                   <span class="setting-desc">Disables heavy blur effects and animations for maximum speed on lower-end devices</span>
                 </div>
                 <label class="switch">
@@ -435,7 +438,7 @@ const UI = {
               <!-- Setting 3: Number of games on page (12, 24, 48) -->
               <div class="setting-row">
                 <div class="setting-info">
-                  <span class="setting-title">🎮 Games Per Page</span>
+                  <span class="setting-title" style="display:inline-flex;align-items:center;gap:7px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;"><path d="M6 12h4M8 10v4M15 13h.01M18 11h.01M17.5 6H6.5A4.5 4.5 0 002 10.5v3A4.5 4.5 0 006.5 18h11a4.5 4.5 0 004.5-4.5v-3A4.5 4.5 0 0017.5 6z"/></svg> Games Per Page</span>
                   <span class="setting-desc">Choose how many game cards to display before paginating</span>
                 </div>
                 <div class="page-size-toggle-group">
@@ -448,7 +451,7 @@ const UI = {
               <!-- Setting 4: Profile & Avatars shortcut -->
               <div class="setting-row">
                 <div class="setting-info">
-                  <span class="setting-title">👤 PlayStation Profile & Avatar</span>
+                  <span class="setting-title" style="display:inline-flex;align-items:center;gap:7px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"/></svg>PlayStation Profile &amp; Avatar</span>
                   <span class="setting-desc">Change your username or select an avatar from 450+ PS3/PS4 game collections</span>
                 </div>
                 <button class="btn btn--secondary" id="settingsOpenProfileBtn">
@@ -572,7 +575,7 @@ const UI = {
               </div>
 
               <div class="profile-avatar-search-row">
-                <input type="text" id="avatarSearchInput" class="profile-avatar-search" placeholder="🔍 Search games or avatar names (e.g. Ellie, Drake, Sackboy)..." />
+                <input type="text" id="avatarSearchInput" class="profile-avatar-search" placeholder="Search games or avatar names (e.g. Ellie, Drake, Sackboy)..." />
                 <select id="gameJumpSelect" class="profile-game-jump" aria-label="Jump to game">
                   <option value="">Jump to Game...</option>
                 </select>
@@ -730,7 +733,7 @@ const UI = {
 
         section.innerHTML = `
           <div class="avatar-game-header">
-            <span>🎮 ${game}</span>
+            <span style="display:inline-flex;align-items:center;gap:6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;"><path d="M6 12h4M8 10v4M15 13h.01M18 11h.01M17.5 6H6.5A4.5 4.5 0 002 10.5v3A4.5 4.5 0 006.5 18h11a4.5 4.5 0 004.5-4.5v-3A4.5 4.5 0 0017.5 6z"/></svg> ${game}</span>
             <span class="avatar-game-badge">${avatars.length} avatar${avatars.length !== 1 ? 's' : ''}</span>
           </div>
           <div class="avatar-grid"></div>
@@ -784,7 +787,7 @@ const UI = {
             section.dataset.game = game;
             section.innerHTML = `
               <div class="avatar-game-header">
-                <span>🎮 ${game}</span>
+                <span style="display:inline-flex;align-items:center;gap:6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;"><path d="M6 12h4M8 10v4M15 13h.01M18 11h.01M17.5 6H6.5A4.5 4.5 0 002 10.5v3A4.5 4.5 0 006.5 18h11a4.5 4.5 0 004.5-4.5v-3A4.5 4.5 0 0017.5 6z"/></svg> ${game}</span>
                 <span class="avatar-game-badge">${data[game].length} avatars</span>
               </div>
               <div class="avatar-grid"></div>

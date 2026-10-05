@@ -133,23 +133,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   const themeSelect = document.getElementById('themeSelect');
 
   const themes = [
-    { value: 'dark', label: 'Dark Navy', emoji: '🌙' },
-    { value: 'light', label: 'PS5 Clean', emoji: '☀️' },
-    { value: 'ocean', label: 'Ocean Trench', emoji: '🌊' },
-    { value: 'cyberpunk', label: 'Cyberpunk', emoji: '🪩' },
-    { value: 'forest', label: 'Emerald Forest', emoji: '🌲' },
-    { value: 'amber', label: 'Molten Amber', emoji: '🔥' },
-    { value: 'violet', label: 'Cosmic Violet', emoji: '🌀' },
-    { value: 'sunset', label: 'Synth Sunset', emoji: '🌅' },
-    { value: 'classic', label: 'Classic PS', emoji: '🕹️' }
+    { value: 'dark', label: 'Dark Navy', icon: 'M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z' },
+    { value: 'light', label: 'PS5 Clean', icon: 'M12 4V2M12 22v-2M4 12H2M22 12h-2M5.6 5.6L4.2 4.2M19.8 19.8l-1.4-1.4M5.6 18.4l-1.4 1.4M19.8 4.2l-1.4 1.4M16 12a4 4 0 11-8 0 4 4 0 018 0z' },
+    { value: 'ocean', label: 'Ocean Trench', icon: 'M2 7c2 2.5 4.5 3.5 7 3.5S14 9.5 17 7s4.5-3.5 5-3.5M2 13c2 2.5 4.5 3.5 7 3.5s5-1 8-3.5 4.5-3.5 5-3.5M2 19c2 2.5 4.5 3.5 7 3.5s5-1 8-3.5 4.5-3.5 5-3.5' },
+    { value: 'cyberpunk', label: 'Cyberpunk', icon: 'M12 2l2.6 7.4L22 12l-7.4 2.6L12 22l-2.6-7.4L2 12l7.4-2.6z' },
+    { value: 'forest', label: 'Emerald Forest', icon: 'M12 2L6 11h3v7h6v-7h3zM12 18v4' },
+    { value: 'amber', label: 'Molten Amber', icon: 'M12 2c3.2 4.4 5.5 7.2 5.5 10a5.5 5.5 0 11-11 0c0-2.8 2.3-5.6 5.5-10z' },
+    { value: 'violet', label: 'Cosmic Violet', icon: 'M12 3a9 9 0 109 9c0-2-4.5-3.5-9-3.5S3 10 3 12a9 9 0 009-9z' },
+    { value: 'sunset', label: 'Synth Sunset', icon: 'M12 4a5 5 0 015 5v1H7V9a5 5 0 015-5zM3 18h18M6 14h12' },
+    { value: 'classic', label: 'Classic PS', icon: 'M6 12h4M8 10v4M15 13h.01M18 11h.01M17.5 6H6.5A4.5 4.5 0 002 10.5v3A4.5 4.5 0 006.5 18h11a4.5 4.5 0 004.5-4.5v-3A4.5 4.5 0 0017.5 6z' }
   ];
+
+  function themeIconSVG(themeObj) {
+    const d = (themeObj && themeObj.icon) || themes[0].icon;
+    return `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`;
+  }
 
   function applyTheme(themeName) {
     const themeObj = themes.find(t => t.value === themeName) || themes[0];
     document.documentElement.setAttribute('data-theme', themeObj.value);
     localStorage.setItem('ps4_theme', themeObj.value);
 
-    if (themeToggle) themeToggle.textContent = themeObj.emoji;
+    if (themeToggle) themeToggle.innerHTML = themeIconSVG(themeObj);
     if (themeSelect) themeSelect.value = themeObj.value;
 
     const orbs = document.querySelectorAll('.orb');
@@ -167,7 +172,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const idx = themes.findIndex(t => t.value === current);
       const nextTheme = themes[(idx + 1) % themes.length];
       applyTheme(nextTheme.value);
-      UI.showToast(`Theme: ${nextTheme.emoji} ${nextTheme.label}`);
+      UI.showToast(`Theme: ${nextTheme.label}`);
     });
   }
 
@@ -176,7 +181,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     themes.forEach(t => {
       const opt = document.createElement('option');
       opt.value = t.value;
-      opt.textContent = `${t.emoji} ${t.label}`;
+      opt.textContent = t.label;
       themeSelect.appendChild(opt);
     });
     themeSelect.value = initialTheme;
