@@ -117,9 +117,18 @@
           <div class="reveal reveal--fade search-bar-row search-bar-row--wrap">
             <input type="text" id="searchInput" placeholder="Search games by title, ID, developer..." class="form-input">
             <select id="sortSelect" class="form-select" aria-label="Sort games">
-              <option value="title">Sort by Title (A-Z)</option>
-              <option value="releaseDate">Sort by Release Date</option>
-              <option value="size.game">Sort by Size</option>
+              <optgroup label="Title">
+                <option value="title:asc">Title (A → Z)</option>
+                <option value="title:desc">Title (Z → A)</option>
+              </optgroup>
+              <optgroup label="Release date">
+                <option value="releaseDate:asc">Release date (oldest first)</option>
+                <option value="releaseDate:desc">Release date (newest first)</option>
+              </optgroup>
+              <optgroup label="Size">
+                <option value="size.game:asc">Size (smallest first)</option>
+                <option value="size.game:desc">Size (largest first)</option>
+              </optgroup>
             </select>
           </div>
 

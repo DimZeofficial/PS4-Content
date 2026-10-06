@@ -451,8 +451,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     if (sortSelect) {
+      // Options carry "<field>:<direction>" so every field sorts both ways
       sortSelect.addEventListener('change', (e) => {
-        db.updateFilter('sortBy', e.target.value);
+        const [sortBy, sortOrder] = String(e.target.value).split(':');
+        if (!sortBy) return;
+        db.updateFilter('sortBy', sortBy);
+        db.updateFilter('sortOrder', sortOrder === 'desc' ? 'desc' : 'asc');
         applyFilterAndReset();
       });
     }
