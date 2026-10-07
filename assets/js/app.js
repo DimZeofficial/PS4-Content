@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  // 9. Themes Switching (9 Fully-Working PlayStation Themes)
+  // 9. Themes Switching (10 Fully-Working PlayStation Themes)
   const themeToggle = document.getElementById('themeToggle');
 
   const themes = [
@@ -140,7 +140,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     { value: 'amber', label: 'Molten Amber', icon: 'M12 2c3.2 4.4 5.5 7.2 5.5 10a5.5 5.5 0 11-11 0c0-2.8 2.3-5.6 5.5-10z' },
     { value: 'violet', label: 'Cosmic Violet', icon: 'M12 3a9 9 0 109 9c0-2-4.5-3.5-9-3.5S3 10 3 12a9 9 0 009-9z' },
     { value: 'sunset', label: 'Synth Sunset', icon: 'M12 4a5 5 0 015 5v1H7V9a5 5 0 015-5zM3 18h18M6 14h12' },
-    { value: 'classic', label: 'Classic PS', icon: 'M6 12h4M8 10v4M15 13h.01M18 11h.01M17.5 6H6.5A4.5 4.5 0 002 10.5v3A4.5 4.5 0 006.5 18h11a4.5 4.5 0 004.5-4.5v-3A4.5 4.5 0 0017.5 6z' }
+    { value: 'classic', label: 'Classic PS', icon: 'M6 12h4M8 10v4M15 13h.01M18 11h.01M17.5 6H6.5A4.5 4.5 0 002 10.5v3A4.5 4.5 0 006.5 18h11a4.5 4.5 0 004.5-4.5v-3A4.5 4.5 0 0017.5 6z' },
+    { value: 'catppuccin', label: 'Catppuccin', icon: 'M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58-.42 7-.42 7 .57 1.07 1 2.24 1 3.44C21 17.9 17.9 21 15 21S9 17.9 9 15c0-1.25.5-2.43 1.35-3.26v0C9.31 9.97 5.6 7.05 4.3 6.02A2.1 2.1 0 018.6 4a7.24 7.24 0 013.4 1z' }
   ];
 
   function themeIconSVG(themeObj) {
