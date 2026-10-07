@@ -132,16 +132,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   const themeToggle = document.getElementById('themeToggle');
 
   const themes = [
-    { value: 'dark', label: 'Dark Navy', icon: 'M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z' },
-    { value: 'light', label: 'PS5 Clean', icon: 'M12 4V2M12 22v-2M4 12H2M22 12h-2M5.6 5.6L4.2 4.2M19.8 19.8l-1.4-1.4M5.6 18.4l-1.4 1.4M19.8 4.2l-1.4 1.4M16 12a4 4 0 11-8 0 4 4 0 018 0z' },
-    { value: 'ocean', label: 'Ocean Trench', icon: 'M2 7c2 2.5 4.5 3.5 7 3.5S14 9.5 17 7s4.5-3.5 5-3.5M2 13c2 2.5 4.5 3.5 7 3.5s5-1 8-3.5 4.5-3.5 5-3.5M2 19c2 2.5 4.5 3.5 7 3.5s5-1 8-3.5 4.5-3.5 5-3.5' },
-    { value: 'cyberpunk', label: 'Cyberpunk', icon: 'M12 2l2.6 7.4L22 12l-7.4 2.6L12 22l-2.6-7.4L2 12l7.4-2.6z' },
-    { value: 'forest', label: 'Emerald Forest', icon: 'M12 2L6 11h3v7h6v-7h3zM12 18v4' },
-    { value: 'amber', label: 'Molten Amber', icon: 'M12 2c3.2 4.4 5.5 7.2 5.5 10a5.5 5.5 0 11-11 0c0-2.8 2.3-5.6 5.5-10z' },
-    { value: 'violet', label: 'Cosmic Violet', icon: 'M12 3a9 9 0 109 9c0-2-4.5-3.5-9-3.5S3 10 3 12a9 9 0 009-9z' },
-    { value: 'sunset', label: 'Synth Sunset', icon: 'M12 4a5 5 0 015 5v1H7V9a5 5 0 015-5zM3 18h18M6 14h12' },
-    { value: 'classic', label: 'Classic PS', icon: 'M6 12h4M8 10v4M15 13h.01M18 11h.01M17.5 6H6.5A4.5 4.5 0 002 10.5v3A4.5 4.5 0 006.5 18h11a4.5 4.5 0 004.5-4.5v-3A4.5 4.5 0 0017.5 6z' },
-    { value: 'catppuccin', label: 'Catppuccin', icon: 'M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58-.42 7-.42 7 .57 1.07 1 2.24 1 3.44C21 17.9 17.9 21 15 21S9 17.9 9 15c0-1.25.5-2.43 1.35-3.26v0C9.31 9.97 5.6 7.05 4.3 6.02A2.1 2.1 0 018.6 4a7.24 7.24 0 013.4 1z' }
+    { value: 'dark', label: 'Dark Navy', icon: 'M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z', logo: 'dark_navy' },
+    { value: 'light', label: 'PS5 Clean', icon: 'M12 4V2M12 22v-2M4 12H2M22 12h-2M5.6 5.6L4.2 4.2M19.8 19.8l-1.4-1.4M5.6 18.4l-1.4 1.4M19.8 4.2l-1.4 1.4M16 12a4 4 0 11-8 0 4 4 0 018 0z', logo: 'ps5clean' },
+    { value: 'ocean', label: 'Ocean Trench', icon: 'M2 7c2 2.5 4.5 3.5 7 3.5S14 9.5 17 7s4.5-3.5 5-3.5M2 13c2 2.5 4.5 3.5 7 3.5s5-1 8-3.5 4.5-3.5 5-3.5M2 19c2 2.5 4.5 3.5 7 3.5s5-1 8-3.5 4.5-3.5 5-3.5', logo: 'ocean' },
+    { value: 'cyberpunk', label: 'Cyberpunk', icon: 'M12 2l2.6 7.4L22 12l-7.4 2.6L12 22l-2.6-7.4L2 12l7.4-2.6z', logo: 'cyberpunk' },
+    { value: 'forest', label: 'Emerald Forest', icon: 'M12 2L6 11h3v7h6v-7h3zM12 18v4', logo: 'emerald' },
+    { value: 'amber', label: 'Molten Amber', icon: 'M12 2c3.2 4.4 5.5 7.2 5.5 10a5.5 5.5 0 11-11 0c0-2.8 2.3-5.6 5.5-10z', logo: 'molten' },
+    { value: 'violet', label: 'Cosmic Violet', icon: 'M12 3a9 9 0 109 9c0-2-4.5-3.5-9-3.5S3 10 3 12a9 9 0 009-9z', logo: 'violet' },
+    { value: 'sunset', label: 'Synth Sunset', icon: 'M12 4a5 5 0 015 5v1H7V9a5 5 0 015-5zM3 18h18M6 14h12', logo: 'sunset' },
+    { value: 'classic', label: 'Classic PS', icon: 'M6 12h4M8 10v4M15 13h.01M18 11h.01M17.5 6H6.5A4.5 4.5 0 002 10.5v3A4.5 4.5 0 006.5 18h11a4.5 4.5 0 004.5-4.5v-3A4.5 4.5 0 0017.5 6z', logo: 'classicPS' },
+    { value: 'catppuccin', label: 'Catppuccin', icon: 'M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58-.42 7-.42 7 .57 1.07 1 2.24 1 3.44C21 17.9 17.9 21 15 21S9 17.9 9 15c0-1.25.5-2.43 1.35-3.26v0C9.31 9.97 5.6 7.05 4.3 6.02A2.1 2.1 0 018.6 4a7.24 7.24 0 013.4 1z', logo: 'catppuccin' }
   ];
 
   function themeIconSVG(themeObj) {
@@ -155,6 +155,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     localStorage.setItem('ps4_theme', themeObj.value);
 
     if (themeToggle) themeToggle.innerHTML = themeIconSVG(themeObj);
+
+    // Tab favicon and sidebar mark follow the active theme
+    const faviconLink = document.querySelector('link[rel="icon"]');
+    if (faviconLink) faviconLink.href = `favicon_${themeObj.logo}.png`;
+    document.querySelectorAll('.sidebar__logo-img').forEach(img => {
+      const src = `logo_${themeObj.logo}.png`;
+      if (img.getAttribute('src') !== src) img.src = src;
+    });
 
     const orbs = document.querySelectorAll('.orb');
     orbs.forEach(orb => {
