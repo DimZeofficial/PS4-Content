@@ -322,7 +322,8 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   display: none;
-  align-items: center;
+  /* Panels pin to the top of the viewport so they are never below the fold */
+  align-items: flex-start;
   justify-content: center;
   z-index: 1000;
   padding: var(--space-lg);
@@ -1100,18 +1101,16 @@
 }
 
 @media (max-width: 900px) {
-  /* Modals become near-full-screen sheets */
+  /* Modals become full-height panels pinned to the top of the screen */
   .modal {
     padding: 0;
-    align-items: flex-end;
+    align-items: flex-start;
   }
 
   .modal__content {
     max-width: 100%;
     max-height: 96dvh;
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    border-bottom: none;
-    transform: translateY(28px);
+    border-radius: var(--radius-lg);
   }
 
   .modal__header {
@@ -1335,7 +1334,8 @@
   /* Settings must fit one screen: drop the redundant subtitle padding and
      keep each description to two lines */
   .modal__header {
-    padding: var(--space-sm) var(--space-md);
+    /* Clear the notch/status bar while keeping the tighter padding */
+    padding: max(var(--space-sm), env(safe-area-inset-top)) var(--space-md) var(--space-sm);
   }
 
   .settings-list {

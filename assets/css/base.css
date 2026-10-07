@@ -77,7 +77,11 @@ body {
 
 body.page-loaded {
   opacity: 1;
-  transform: translateY(0);
+  /* Settle to `none` once the fade-in slides up: a lingering identity matrix
+     on <body> would still create a containing block, turning every
+     position:fixed overlay (modals, drawer, orbs) into full-page absolute
+     positioning so panels appear far below the top of the viewport */
+  transform: none;
 }
 
 body.page-fade-out {
