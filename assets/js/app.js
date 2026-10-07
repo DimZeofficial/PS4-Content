@@ -130,7 +130,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 9. Themes Switching (9 Fully-Working PlayStation Themes)
   const themeToggle = document.getElementById('themeToggle');
-  const themeSelect = document.getElementById('themeSelect');
 
   const themes = [
     { value: 'dark', label: 'Dark Navy', icon: 'M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z' },
@@ -155,7 +154,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     localStorage.setItem('ps4_theme', themeObj.value);
 
     if (themeToggle) themeToggle.innerHTML = themeIconSVG(themeObj);
-    if (themeSelect) themeSelect.value = themeObj.value;
 
     const orbs = document.querySelectorAll('.orb');
     orbs.forEach(orb => {
@@ -173,20 +171,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       const nextTheme = themes[(idx + 1) % themes.length];
       applyTheme(nextTheme.value);
       UI.showToast(`Theme: ${nextTheme.label}`);
-    });
-  }
-
-  if (themeSelect) {
-    themeSelect.innerHTML = '';
-    themes.forEach(t => {
-      const opt = document.createElement('option');
-      opt.value = t.value;
-      opt.textContent = t.label;
-      themeSelect.appendChild(opt);
-    });
-    themeSelect.value = initialTheme;
-    themeSelect.addEventListener('change', (e) => {
-      applyTheme(e.target.value);
     });
   }
 

@@ -632,22 +632,7 @@
   user-select: none;
 }
 
-/* Theme selector */
-.theme-select {
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
-  background: var(--color-bg-card);
-  color: var(--color-text-primary);
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  cursor: pointer;
-  transition: border-color var(--transition-fast);
-}
-
-.theme-select:hover {
-  border-color: var(--color-accent-primary);
-}
+/* Theme cycle button icon stays in sync with the active theme */
 
 /* ==========================================================================
    Settings Modal Styles

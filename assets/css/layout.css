@@ -432,14 +432,6 @@ body.nav-open {
     margin-left: auto;
   }
 
-  /* The theme dropdown is the widest control left in the mobile header;
-     cap it so burger + profile + theme + settings all share the row */
-  .theme-select {
-    max-width: 118px;
-    padding: 6px 8px;
-    font-size: 0.8rem;
-  }
-
   .content-area {
     padding: var(--space-md);
   }
@@ -473,22 +465,12 @@ body.nav-open {
   .header-user-btn {
     padding: 5px 6px;
   }
-
-  .theme-select {
-    max-width: 84px;
-    padding: 5px 6px;
-    font-size: 0.75rem;
-  }
 }
 
 /* Very narrow phones (SE / small Androids): one column avoids cramped cards */
 @media (max-width: 359px) {
   .game-grid {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .theme-select {
-    max-width: 66px;
   }
 }
 
