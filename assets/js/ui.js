@@ -209,17 +209,17 @@ const UI = {
             </div>
           </div>
         ` : ''}
-        ${game.links?.dlpsgame ? `
-          <div class="download-item">
-            <div class="download-item__info">
-              <span class="download-item__type">DLPSGAME Host</span>
-              <span class="download-item__notes">Mirror & Patch Sources</span>
-            </div>
-            <div class="download-item__actions">
-              <a href="${game.links.dlpsgame}" class="btn btn--secondary" target="_blank" rel="noopener">Open DLPSGAME Link ↗</a>
-            </div>
+        <div class="download-item">
+          <div class="download-item__info">
+            <span class="download-item__type">DLPSGAME Host</span>
+            <span class="download-item__notes">${game.links?.dlpsgame ? 'Mirror & Patch Sources' : 'No matching page found'}</span>
           </div>
-        ` : ''}
+          <div class="download-item__actions">
+            ${game.links?.dlpsgame
+              ? `<a href="${game.links.dlpsgame}" class="btn btn--secondary" target="_blank" rel="noopener">Open DLPSGAME Link ↗</a>`
+              : `<span class="download-item__unavailable">Unavailable</span>`}
+          </div>
+        </div>
         ${game.links?.superpsx ? `
           <div class="download-item">
             <div class="download-item__info">
@@ -247,9 +247,6 @@ const UI = {
             </div>
           </div>
         `).join('') : ''}
-        ${(!game.links?.pkgps4 && !game.links?.dlpsgame && !game.links?.superpsx && (!Array.isArray(game.downloads) || game.downloads.length === 0)) ? `
-          <p style="color:var(--color-text-secondary); padding: 12px 0;">No direct download links listed for this title.</p>
-        ` : ''}
       </div>
 
       <div class="detail__info" style="opacity:1 !important; transform:none !important;">
