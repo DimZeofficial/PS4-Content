@@ -202,7 +202,6 @@ const UI = {
           <div class="download-item" style="border-left: 3px solid var(--color-accent-primary);">
             <div class="download-item__info">
               <span class="download-item__type">PKGPS4 Database</span>
-              <span class="download-item__notes">High Speed Direct PKG Host</span>
             </div>
             <div class="download-item__actions">
               <a href="${game.links.pkgps4}" class="btn btn--primary" target="_blank" rel="noopener">Open PKGPS4 Link ↗</a>
@@ -212,7 +211,7 @@ const UI = {
         <div class="download-item">
           <div class="download-item__info">
             <span class="download-item__type">DLPSGAME Host</span>
-            <span class="download-item__notes">${game.links?.dlpsgame ? 'Mirror & Patch Sources' : 'No matching page found'}</span>
+            ${game.links?.dlpsgame ? '' : '<span class="download-item__notes">No matching page found</span>'}
           </div>
           <div class="download-item__actions">
             ${game.links?.dlpsgame
@@ -231,22 +230,6 @@ const UI = {
             </div>
           </div>
         ` : ''}
-        ${Array.isArray(game.downloads) ? game.downloads.map(dl => `
-          <div class="download-item">
-            <div class="download-item__info">
-              <span class="download-item__type">${dl.type || 'PKG'}</span>
-              ${dl.version ? `<span class="download-item__version">Version: ${dl.version}</span>` : ''}
-              ${dl.size ? `<span class="download-item__size">Size: ${dl.size}</span>` : ''}
-              ${dl.notes ? `<span class="download-item__notes">${dl.notes}</span>` : ''}
-            </div>
-            <div class="download-item__actions">
-              ${dl.url ? `<a href="${dl.url}" class="btn btn--primary" target="_blank" rel="noopener">Download from ${dl.source || 'Host'}</a>` : ''}
-              ${Array.isArray(dl.mirrors) ? dl.mirrors.map(m => `
-                <a href="${m.url}" class="btn btn--ghost" target="_blank" rel="noopener">${m.source}</a>
-              `).join('') : ''}
-            </div>
-          </div>
-        `).join('') : ''}
       </div>
 
       <div class="detail__info" style="opacity:1 !important; transform:none !important;">
