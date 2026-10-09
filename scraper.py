@@ -21,12 +21,12 @@ def scrape_pkg_links(page_url):
         soup = BeautifulSoup(response.text, "html.parser")
         found_downloads = []
 
-        # Find download links (adjust selector if page structure varies)
+        # Find download links
         for anchor in soup.find_all("a", href=True):
             href = anchor["href"]
             text = anchor.get_text(strip=True)
             
-            # Match links pointing to .pkg files or hosters like 1fichier/MediaFire/Mega
+            # Match links pointing to .pkg files or file hosters
             if re.search(r'\.(pkg)$|1fichier|mediafire|mega\.nz|pixeldrain', href, re.IGNORECASE):
                 dl_type = "Game"
                 if "update" in text.lower() or "patch" in text.lower():
@@ -46,26 +46,31 @@ def scrape_pkg_links(page_url):
         print(f"[!] Error scraping {page_url}: {e}")
         return []
 
-def process_games(file_path="games.json", output_path="games_scraped.json"):
+def process_games(file_path="games.json", output_path="games.json"):
     """Reads games.json, filters PS4 games, scrapes download links, and saves output."""
     with open(file_path, "r", encoding="utf-8") as f:
         data = json.load(f)
 
+    # Handle both top-level list [...] and dictionary {"games": [...]}
+    if isinstance(data, list):
+        games_list = data
+    else:
+        games_list = data.get("games", [])
+
     scraped_games = []
 
-    for game in data.get("games", []):
+    for game in games_list:
         title = game.get("title", "")
         game_id = game.get("id", "")
         desc = game.get("description", "")
 
-        # Check if the title or description mentions PS5-exclusive content
-        if "PS5" in desc or "Download" in desc and "for PS5" in desc:
-            # Skip if it is purely a PS5 release (e.g. Broken links or PS5-only text)
+        # Filter out PS5-exclusive releases
+        if "PS5" in desc or ("Download" in desc and "for PS5" in desc):
             if "PS4" not in desc and not game_id.startswith("CUSA"):
                 print(f"[-] Skipping non-PS4/PS5-only game: {title}")
                 continue
 
-        # Extract target page URL
+        # Extract target page URL from links or existing download entries
         page_url = game.get("links", {}).get("pkgps4")
         if not page_url and game.get("downloads"):
             page_url = game["downloads"][0].get("url")
@@ -78,11 +83,13 @@ def process_games(file_path="games.json", output_path="games_scraped.json"):
 
         scraped_games.append(game)
 
-    # Save processed data
-    with open(output_path, "w", encoding="utf-8") as f:
-        json.dump({"games": scraped_games}, f, indent=2, ensure_ascii=False)
+    # Preserve original JSON structure (list vs dictionary) when writing back
+    output_data = scraped_games if isinstance(data, list) else {"games": scraped_games}
 
-    print(f"\n[✓] Finished processing {len(scraped_games)} PS4 games. Saved to '{output_path}'.")
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(output_data, f, indent=2, ensure_ascii=False)
+
+    print(f"\n[✓] Finished processing {len(scraped_games)} games. Saved to '{output_path}'.")
 
 if __name__ == "__main__":
     process_games()
