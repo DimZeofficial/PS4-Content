@@ -101,6 +101,25 @@ class GameDatabase {
         valueB = b[parent]?.[child] ?? '';
       }
       
+      // Helper: parse size strings like "28.40 GB", "725.35 MB", "15 GB" into GB numeric value
+      const parseSize = (s) => {
+        if (!s) return NaN;
+        const m = s.match(/^([\d.]+)\s*(GB|MB|KB|TB)$/i);
+        if (!m) return NaN;
+        const num = parseFloat(m[1]);
+        const unit = m[2].toUpperCase();
+        const mult = {KB: 1/1024, MB: 1/1024, GB: 1, TB: 1024}[unit] ?? 1;
+        return num * mult;
+      };
+      
+      const aNum = parseSize(valueA);
+      const bNum = parseSize(valueB);
+      if (!isNaN(aNum) && !isNaN(bNum)) {
+        // numeric comparison (ascending or descending)
+        const diff = sortOrder === 'asc' ? aNum - bNum : bNum - aNum;
+        if (diff !== 0) return diff;
+      }
+      // fallback to string comparison
       if (typeof valueA === 'string' && typeof valueB === 'string') {
         valueA = valueA.toLowerCase();
         valueB = valueB.toLowerCase();
